@@ -1,6 +1,8 @@
-# Google Codelab Components
+# Codelab: Accelerate WordPress Content with AMP
 
-A set of Polymer elements, core of the Google Codelabs platform.
+Learn how to speed up your WordPress site with Accelerated Mobile Pages (AMP).
+Parts of tutorial courtesy of [Google Developers Code Labs](https://https://www.code-labs.io)
+Codelabs web components courtesy of [Google Codelabs on GitHub](https://googlecodelabs.github.io/codelab-components/)
 
 ## Dev setup
 
