@@ -13,15 +13,474 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
+
 <!doctype html>
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="../webcomponentsjs/webcomponents-lite.min.js"></script>
-  <link rel="import" href="../iron-component-page/iron-component-page.html">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>AMP + WordPress demo</title>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+  <link rel="stylesheet"
+      href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700">
+  <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="google-codelab-elements.html">
+  <style>
+  body {
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial;
+  }
+  </style>
 </head>
-<body unresolved>
-  <iron-component-page src="google-codelab-elements.html"></iron-component-page>
+<body unresolved class="fullbleed">
+
+  <google-codelab title="AMPlify your WordPress site with Accelerated Mobile Pages"
+                  feedback-link="mailto:me@webgrrrl.net"
+                  environment="web">
+
+                      <google-codelab-step label="Overview" duration="1">
+                        <p>In this codelab, you&#39;ll learn how to build Accelerated Mobile Pages -- or AMP for short. To achieve this you will implement a simple news article web page that conforms to the AMP specifications while incorporating several typical web features commonly used on mobile news sites.</p>
+                <h2 class="checklist">What you&#39;ll learn</h2>
+                <ul class="checklist">
+                <li>How AMP improves the user experience of the mobile web.</li>
+                <li>The foundations of an AMP site.</li>
+                <li>AMP&#39;s limitations.</li>
+                <li>How AMP&#39;s web components solve common news site problems.</li>
+                <li>How to validate your AMP.</li>
+                <li>How to prepare your AMP for Google Search.</li>
+                </ul>
+                <h2>What you&#39;ll need</h2>
+                <ul>
+                <li>The sample code</li>
+                <li>Python (preferably 2.7) or the Chrome 200 OK Web Server extension</li>
+                <li>Chrome (or an equivalent browser that can inspect the JavaScript console)</li>
+                <li>Code Editor (for example Atom, Sublime, Notepad++)</li>
+                </ul>
+
+
+                      </google-codelab-step>
+
+                      <google-codelab-step label="Get the sample code" duration="3">
+                        <p>You can either download all the sample code to your computer:</p>
+                <p><a href="https://github.com/googlecodelabs/accelerated-mobile-pages-foundations/archive/master.zip" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download Zip</paper-button></a></p>
+                <p>...or clone the GitHub repository from the command line:</p>
+                <pre><code>$ git clone https://github.com/googlecodelabs/accelerated-mobile-pages-foundations.git</code></pre>
+                <p>You will download a ZIP file containing several example resources files and the starting article.html page. </p>
+                <p>Unzip the folder and navigate to the directory via the command line on your computer.</p>
+
+
+                      </google-codelab-step>
+
+                      <google-codelab-step label="Run the sample page" duration="5">
+                        <p>In order to test our sample page we need to access the files from a web server. There are several ways to create a temporary local web server for the purposes of testing. For this code lab we will provide instructions for 3 options available:</p>
+                <ul>
+                <li><strong>The Google Chrome app &#34;Web Server for Chrome&#34;</strong> - This is the recommended approach as it is the simplest and most cross platform solution available. Note: this approach requires Google Chrome to be installed.</li>
+                <li><strong>Firebase Hosting</strong> - An alternative option if you&#39;re also interested in exploring our new static asset hosting platform &#34;Firebase Hosting&#34;. SSL-enabled by default.</li>
+                <li><strong>A local HTTP Python Server</strong> - Requires access to the command-line.</li>
+                </ul>
+                <aside class="special"><p><strong>Note</strong>: It is strongly recommended that HTTPS be used in production environments. HTTPS has several benefits beyond just security including SEO. You can read more about this topic <a href="https://webmasters.googleblog.com/2014/08/https-as-ranking-signal.html" target="_blank">here</a>.</p>
+                </aside>
+                <h2>Option #1: Web Server for Chrome</h2>
+                <p>You can find the &#34;Web Server for Chrome&#34; app at <a href="https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb" target="_blank">this link</a> on the Chrome Web Store.</p>
+                <p><img style="max-width: 624.00px" src="img/a322aaec88da31f0.png"></p>
+                <p>After installing the Chrome App you must point the app at a particular folder via the &#34;Choose Folder&#34; button. For this code lab you should select the folder where you unzipped the code lab example files.</p>
+                <p>Additionally you should tick the &#34;Automatically show index.html&#34; option and set the port to &#34;8000&#34;. You will need to restart the web server for these changes to take effect.</p>
+                <p>Access <a href="http://localhost:8000/article.html" target="_blank">this URL</a> via:</p>
+                <pre>http://localhost:8000/article.html</pre>
+                <p>If the above URL loads successfully you can continue to the next step.</p>
+                <h2>Option #2: Firebase Hosting</h2>
+                <p>If you are interested in exploring our new Firebase static web hosting you can follow the instructions <a href="https://firebase.google.com/docs/hosting/quickstart" target="_blank">available here</a> to deploy your AMP site to a Firebase hosting URL.</p>
+                <p>Firebase Hosting is a static hosting provider that you can use to quickly deploy and host a static website and its assets; including HTML, CSS, and JavaScript files. Users benefit from reduced latency because static content is cached in a content delivery network (CDN) with points of presence (PoPs) located around the world.</p>
+                <p>Lastly, Firebase Hosting is always served via SSL so it&#39;s great for AMP and the web in general. If you&#39;re more interested in purely focusing on AMP then simply ignore this option.</p>
+                <h2>Option #3: HTTP Python Server</h2>
+                <p>If you don&#39;t use Chrome or you are struggling to install the Chrome extension you can also use Python from the command-line to fire up a local web server.</p>
+                <p>To run Python&#39;s built-in HTTP server from the command line simply execute the following:</p>
+                <pre>python -m SimpleHTTPServer</pre>
+                <p>And access <a href="http://localhost:8000/article.html" target="_blank">this URL</a>:</p>
+                <pre>http://localhost:8000/article.html</pre>
+
+
+                      </google-codelab-step>
+
+                      <google-codelab-step label="Build a regular HTML page" duration="6">
+                        <p>In the downloaded zip file, you will find a file called <code>article.html</code>. This is the article we are creating an AMP equivalent page for. </p>
+                <p><strong>Copy</strong> the code from the <code>article.html</code> sample and paste it into a new file. Save this file as <code>article.amp.html.</code></p>
+                <aside class="special"><p><strong>Note</strong>: You don&#39;t have to name your AMP files as <code>.amp.html</code>. In fact, AMP files can have any extension you want. It&#39;s common to see publishers differentiating AMP pages from their canonical versions by using parameters in the url. Eg: <code>http://publisher.com/article.html?amp</code></p>
+                </aside>
+                <p>Your <code>article.amp.html</code> file should look like the following now:</p>
+                <pre><code>&lt;!doctype html&gt;
+                &lt;html lang=&#34;en&#34;&gt;
+                  &lt;head&gt;
+
+                    &lt;title&gt;News Article&lt;/title&gt;
+
+                    &lt;link href=&#34;base.css&#34; rel=&#34;stylesheet&#34; /&gt;
+
+                    &lt;script type=&#34;text/javascript&#34; src=&#34;base.js&#34;&gt;&lt;/script&gt;
+                  &lt;/head&gt;
+                  &lt;body&gt;
+                    &lt;header&gt;
+                      News Site
+                    &lt;/header&gt;
+                    &lt;article&gt;
+                      &lt;h1&gt;Article Name&lt;/h1&gt;
+
+                      &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam egestas tortor sapien, non tristique ligula accumsan eu.&lt;/p&gt;
+                    &lt;/article&gt;
+                    &lt;img src=&#34;mountains.jpg&#34;&gt;
+                  &lt;/body&gt;
+                &lt;/html&gt;</code></pre>
+                <p>This is an intentionally simplistic page with common static news article elements: CSS, JavaScript, and an image tag..</p>
+                <p>Our AMP version of the article is just a copy of the original article right now. Let&#39;s convert it to an AMP. To begin, we will add the AMP JavaScript library file and view what errors appear when the AMP validator is turned on.</p>
+                <p>To include the AMP library, <strong>add</strong> this line to the bottom of the <code>&lt;head&gt;</code> tag:</p>
+                <pre><code>&lt;script async src=&#34;https://cdn.ampproject.org/v0.js&#34;&gt;&lt;/script&gt;</code></pre>
+                <p>Now let&#39;s load the new <code>article.amp.html</code> page in our browser via the <a href="http://localhost:8000/article.amp.html" target="_blank">following link</a> and open the <a href="https://developer.chrome.com/devtools/docs/console" target="_blank">Developer Console</a> in Chrome via <code>Menu &gt; More Tools &gt; Developer Tools</code>:</p>
+                <p><img style="max-width: 515.00px" src="img/f43aa9981defd294.png"></p>
+                <p>Now inspect the JavaScript output in the developer console. Make sure you have the Console tab selected:</p>
+                <p><img style="max-width: 201.00px" src="img/a21ac67adf427ddc.png"></p>
+                <p>You should see this log appearing:</p>
+                <pre>Powered by AMP ⚡ HTML</pre>
+                <p>Now to enable the <a href="https://www.ampproject.org/docs/guides/validate.html" target="_blank">AMP validator</a> add this <a href="https://en.wikipedia.org/wiki/Fragment_identifier" target="_blank">fragment identifier</a> to your URL:</p>
+                <pre>#development=1</pre>
+                <p>For example:</p>
+                <pre>http://localhost:8000/article.amp.html#development=1</pre>
+                <p>You may need to manually refresh the page in your browser. You can manually refresh a page in your browser by pressing this button:</p>
+                <p><img style="max-width: 68.00px" src="img/6acd4a3f79bc40a4.png"></p>
+                <p>You should receive several validation errors:</p>
+                <p><img style="max-width: 624.00px" src="img/34c1fe7994f8a573.png"></p>
+                <p>Since this code lab is about Accelerated <strong>Mobile </strong>Pages it is a good idea to simulate a mobile device experience in the Chrome Developer Tools. Click the mobile phone device icon here:</p>
+                <p><img style="max-width: 136.00px" src="img/afb844ab04c5e37a.png"></p>
+                <p>Now select a mobile device (for example a &#34;Nexus 5X&#34;) from this menu:</p>
+                <p><img style="max-width: 375.00px" src="img/3f1ab21e1e5c772b.png"></p>
+                <p>You should see a mobile simulated resolution in your browser such as this:</p>
+                <p><img style="max-width: 415.09px" src="img/fa0e2bcdd237428.png"></p>
+                <p>Now we&#39;re ready to get to work! Let&#39;s step through the validation errors one by one and address how they relate to AMP.</p>
+
+
+                      </google-codelab-step>
+
+                      <google-codelab-step label="Resolve validation errors" duration="12">
+                        <h2>Charset required</h2>
+                <p>We will begin by fixing the following error:</p>
+                <pre>The mandatory tag &#39;meta charset=utf-8&#39; is missing or incorrect.</pre>
+                <p>For correct displaying of text, AMP requires that the charset for the page is set. It also must be the first child of the head tag. The reason for this is to avoid re-interpreting content that was added before the meta charset tag.</p>
+                <p><strong>Add</strong> the following code as the first line of the head tag:</p>
+                <pre><code>&lt;meta charset=&#34;utf-8&#34; /&gt;  </code></pre>
+                <p><strong>Save</strong> the file, <strong>reload</strong> the page and check that this error is not showing anymore. </p>
+                <h2>AMP files are required to have a <code>&lt;link rel=canonical&gt;</code> tag.​​​</h2>
+                <p>Every AMP document is required to have a link referencing the canonical page. So, let&#39;s add the link to our original article.</p>
+                <p>Go ahead and add the following code below the <code>&lt;meta charset=&#34;utf-8&#34; /&gt;</code> tag:</p>
+                <pre>&lt;link rel=&#34;canonical&#34; href=&#34;/article.html&#34;&gt;</pre>
+                <aside class="warning"><p><strong>Important</strong>: It is possible to create a standalone AMP page, which is a page that doesn&#39;t have a canonical. In this scenario, the canonical link is still required, but should point to the AMP article itself:</p>
+                <p><code>&lt;link rel=&#34;canonical&#34; href=&#34;/article.amp.html&#34;&gt;</code></p>
+                </aside>
+                <p>Now, restart your webserver if needed and reload the page. Although there are still plenty of errors to fix, the &#34;AMP files are required to have a <code>&lt;link rel=canonical&gt;</code> tag&#34; error is not there anymore.</p>
+                <h2>AMP attribute required</h2>
+                <p>AMP requires an attribute on the root HTML element of a page to declare the page as an AMP document:</p>
+                <pre>The mandatory attribute &#39;⚡&#39; is missing in tag &#39;html ⚡ for top-level html&#39;
+                The mandatory tag &#39;html ⚡ for top-level html&#39; is missing or incorrect.</pre>
+                <p>This is resolved simply by <strong>adding</strong> the ⚡ attribute to the <code>&lt;html&gt;</code> tag as so:</p>
+                <pre><code>&lt;!doctype html&gt;
+                &lt;html ⚡ lang=&#34;en&#34;&gt;
+                  &lt;head&gt;
+                ...</code></pre>
+                <p>Now, go ahead, reload the page and check that both errors are gone. </p>
+                <aside class="special"><p><strong>Note</strong>: Although the ⚡ is the recommended approach, It&#39;s also possible to use the amp attribute in place of the ⚡ attribute. So, the markup becomes:</p>
+                <p><code>&lt;!doctype html&gt;</code></p>
+                <p><code>&lt;html amp lang=&#34;en&#34;&gt;</code></p>
+                <p><code>  &lt;head&gt;</code></p>
+                <p><code>...</code></p>
+                </aside>
+                <h2>Viewport required</h2>
+                <p>Next we will tackle the following error:</p>
+                <pre>The mandatory tag &#39;meta name=viewport&#39; is missing or incorrect.</pre>
+                <p>AMP requires the definition of a <code>width</code> and <code>minimum-scale</code> for the viewport. These values must be defined as <code>device-width</code> and <code>1</code>, respectively. The <a href="https://developers.google.com/speed/docs/insights/ConfigureViewport?hl=en" target="_blank">viewport</a> is a common tag included in the <code>&lt;head&gt;</code> of an HTML page.</p>
+                <p>This is best rectified with the following HTML snippet being added to the <code>&lt;head&gt;</code> tag. <strong>Add</strong> the following <code>meta</code> tag:</p>
+                <pre><code>&lt;!doctype html&gt;
+                &lt;html ⚡ lang=&#34;en&#34;&gt;
+                  &lt;head&gt;
+                    &lt;meta charset=&#34;utf-8&#34; /&gt;
+
+                    &lt;link rel=&#34;canonical&#34; href=&#34;/article.html&#34;&gt;
+
+                    &lt;!-- The following is the meta tag and viewport information we must add to the page: --&gt;
+                    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width,minimum-scale=1,initial-scale=1&#34;&gt;
+
+                ...</code></pre>
+                <p>These are the only valid values for <code>width</code> and <code>minimum-scale</code> in AMP. Defining <code>initial-scale</code> is not mandatory but it&#39;s a common inclusion in mobile web development and recommended. You can read more about the viewport and responsive design <a href="https://developers.google.com/speed/docs/insights/ConfigureViewport?hl=en" target="_blank">here</a>.</p>
+                <p>As before, reload the page and check if the error has disappeared.</p>
+                <h2>External stylesheets</h2>
+                <p>The following error is related to our use of stylesheets:</p>
+                <pre>The attribute &#39;href&#39; in tag &#39;link rel=stylesheet for fonts&#39; is set to the invalid value &#39;base.css&#39;.</pre>
+                <p>Specifically this is complaining about the following stylesheet link tag in our <code>&lt;head&gt;</code> tag:</p>
+                <pre><code>&lt;link href=&#34;base.css&#34; rel=&#34;stylesheet&#34; /&gt;</code></pre>
+                <p>The problem is that this is an <strong>external</strong> stylesheet reference. In AMP, to keep the load times of documents as fast as possible developers are not allowed to include external stylesheets. Instead all stylesheet rules must be included <strong>inline </strong>in the AMP document.</p>
+                <p>Therefore, <strong>remove</strong> the link tag in the <code>&lt;head&gt;</code> and <strong>replace</strong> it with an inline tag such as the following:</p>
+                <pre><code>&lt;style amp-custom&gt;
+
+                body {
+                  width: auto;
+                  margin: 0;
+                  padding: 0;
+                }
+
+                ...
+
+                &lt;/style&gt;</code></pre>
+                <p>The <strong>contents</strong> of the style tag should be directly copied from the <code>base.css</code> file in your project directory. The <code>amp-custom</code> attribute on the style tag is <strong>mandatory</strong>.</p>
+                <p>Once again, <strong>reload</strong> the page and check if the stylesheets error has disappeared.</p>
+                <aside class="special"><p><strong>Note</strong>: Not only is inline styling required but there is a filesize limit of 50 kilobytes for all styling information. It is recommended to use CSS preprocessors such as <a href="http://sass-lang.com/" target="_blank">SASS</a> and to minify your CSS before inlining it in your pages.</p>
+                </aside>
+                <aside class="warning"><p><strong>Important</strong>: You can only have <strong>one </strong>style tag in your entire AMP document. If you have several external stylesheets referenced by your articles you will need to collate these stylesheets into a single set of rules. <a href="https://www.ampproject.org/docs/guides/responsive/style_pages.html" target="_blank">Read this documentation page</a> for more information on what CSS rules are valid in AMP documents.</p>
+                </aside>
+                <h2>Third-Party JavaScript</h2>
+                <p>While stylesheets can be reworked relatively easily with AMP via inlining, the same is not true for JavaScript.</p>
+                <pre>The tag &#39;script&#39; is disallowed except in specific forms.</pre>
+                <p>In AMP,  user generated scripts are not allowed. Scripts in AMP are only allowed if they follow   two major requirements::</p>
+                <ul>
+                <li>All JavaScript must be asynchronous, i.e. include the <code>async</code> attribute in the script tag.</li>
+                <li>Only the AMP library and AMP components can be included.</li>
+                </ul>
+                <p>This effectively rules out the use of all third-party JavaScript. There is one exception -- third-party JavaScript may be used in iframes.</p>
+                <p>Try opening the external <code>base.js</code> file. What do you see? The file should be empty of any JavaScript code and only include a comment of information such as this:</p>
+                <pre>/*
+
+                This external JavaScript file is intentionally empty.
+
+                Its purpose is merely to demonstrate the AMP validation error related to the use of external JavaScript files.
+
+                */</pre>
+                <p>Considering this external JavaScript file is not a functional component of our website we can safely remove the reference entirely.</p>
+                <p><strong>Remove</strong> the following external JavaScript reference from your document:</p>
+                <pre>&lt;script type=&#34;text/javascript&#34; src=&#34;base.js&#34;&gt;&lt;/script&gt;</pre>
+                <p>Now <strong>reload </strong>the page and check that the script error has disappeared.</p>
+                <aside class="warning"><p><strong>Important</strong>: Including JavaScript via an iframe should be considered a measure of last resort. Wherever possible JavaScript functionality should be replaced via the use of the built-in AMP components. We will explore our first AMP component in the next section.</p>
+                </aside>
+                <aside class="special"><p><strong>Note</strong>: The only exceptions for user generated scripts are when the type attribute is <code>application/ld+json</code> or <code>application/json</code>, which are used to add meta-data to the page and configure AMP components. Other non-executable scripts may be added in the future.</p>
+                </aside>
+                <h2>The AMP CSS boilerplate</h2>
+                <pre>The mandatory tag &#39;noscript enclosure for boilerplate&#39; is missing or incorrect.
+                The mandatory tag &#39;head &gt; style : boilerplate&#39; is missing or incorrect.
+                The mandatory tag &#39;noscript &gt; style : boilerplate&#39; is missing or incorrect.</pre>
+                <p>The next errors refer to two missing tags in the <code>&lt;head&gt;</code> tag. Every AMP document requires these tags to be included:</p>
+                <pre><code>&lt;style amp-boilerplate&gt;body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}&lt;/style&gt;&lt;noscript&gt;&lt;style amp-boilerplate&gt;body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}&lt;/style&gt;&lt;/noscript&gt;</code></pre>
+                <p><strong>Add</strong> the above code snippet to the bottom of the <code>&lt;head&gt;</code> tag of your document.</p>
+                <p>The first tag makes the contents of the page invisible until the AMP JavaScript library updates the body tag to be visible again once the page&#39;s content is ready to render. AMP does this to prevent content of the page to appear that has not yet been styled. This ensures that the user experience feels truly instant as the page&#39;s content appears all at once and everything above the fold is rendered together. The second tag reverts this logic if JavaScript is disabled in the browser.</p>
+                <h2>The amp-img tag</h2>
+                <pre><code>The tag &#39;img&#39; may only appear as a descendant of tag &#39;noscript&#39;. Did you mean &#39;amp-img&#39;?</code></pre>
+                <p>AMP has a web component specifically designed to replace the image tag, called <code>amp-img</code>:</p>
+                <pre><code>&lt;amp-img src=&#34;mountains.jpg&#34;&gt;&lt;/amp-img&gt;</code></pre>
+                <p>Try including the above <code>amp-img</code> tag and run the validator again. You should receive several new errors:</p>
+                <pre>AMP-IMG# Layout not supported for: container
+                The implied layout &#39;CONTAINER&#39; is not supported by tag &#39;amp-img&#39;.</pre>
+                <p>Why did <code>amp-img</code> trigger another error? Because <code>amp-img</code> is not a direct substitute of the traditional HTML <code>img</code> tag. There are additional requirements when using amp-img.</p>
+                <h2>Layout System</h2>
+                <p>This error is telling us that amp-img does not support the layout type ‘container&#39;. One of the most important concepts in AMP&#39;s design is its focus on reducing the amount of DOM reflow required to render its web pages.</p>
+                <p>To reduce DOM reflow AMP includes a layout system for ensuring the layout of the page is as rigid as possible as early as possible in the lifecycle of downloading and rendering the page.</p>
+                <p>The layout system allows for elements on a page to be positioned and scaled in a variety of ways -- fixed dimensions, responsive design, fixed height and more.</p>
+                <p><img style="max-width: 624.00px" src="img/cbac07977308866f.png"></p>
+                <p>In our case the layout system inferred our layout type for the <code>amp-img</code> as the <code>container</code> type. However, the container type is for elements which contain children elements and is incompatible with the <code>amp-img</code> tag which is the reason for this error.</p>
+                <p>Why was the container type inferred? Because we did not specify a height attribute for the <code>amp-img</code> tag. In HTML, reflow can be reduced by always specifying a fixed width and height for elements on a page. In AMP, it is recommended to define the width and height for amp-img elements as this allows AMP to understand the aspect ratio of the element.</p>
+                <p>Set the width and height as follows:</p>
+                <pre><code>&lt;amp-img src=&#34;mountains.jpg&#34; width=&#34;266&#34; height=&#34;150&#34;&gt;&lt;/amp-img&gt;</code></pre>
+                <p>Refresh the page and check the validator - you should no longer see any errors! However, the image doesn&#39;t look so great as it is awkwardly positioned on the page. It would be great if we could scale the image to <strong>responsively</strong> stretch and fit the page no matter the screen size.</p>
+                <p><img style="max-width: 238.00px" src="img/aec27c99d98f2baf.png"></p>
+                <p>Surprisingly, defining the width and height does not restrict the element to an entirely fixed size. The AMP layout system can position and scale the element in a variety of ways by knowing its aspect ratio - the layout attribute informs AMP of how you want the element positioned and scaled.</p>
+                <p>By setting the layout attribute to <code>responsive</code> we can achieve this:</p>
+                <pre><code>&lt;amp-img src=&#34;mountains.jpg&#34; layout=&#34;responsive&#34; width=&#34;266&#34; height=&#34;150&#34;&gt;&lt;/amp-img&gt;</code></pre>
+                <p>Voila! Our image is in the correct aspect ratio and responsively fills the width of the screen.</p>
+                <p><img style="max-width: 238.00px" src="img/55a4957901da673c.png"></p>
+                <h2>Success!</h2>
+                <p>Now your AMP document should look something along the lines of this:</p>
+                <pre><code>&lt;!doctype html&gt;
+                &lt;html ⚡ lang=&#34;en&#34;&gt;
+                  &lt;head&gt;
+                    &lt;meta charset=&#34;utf-8&#34; /&gt;
+                    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width,minimum-scale=1,initial-scale=1&#34;&gt;
+
+                    &lt;link rel=&#34;canonical&#34; href=&#34;/article.html&#34;&gt;
+                    &lt;link rel=&#34;shortcut icon&#34; href=&#34;amp_favicon.png&#34;&gt;
+
+                    &lt;title&gt;News Article&lt;/title&gt;
+
+                    &lt;style amp-boilerplate&gt;body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}&lt;/style&gt;&lt;noscript&gt;&lt;style amp-boilerplate&gt;body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}&lt;/style&gt;&lt;/noscript&gt;
+                    &lt;style amp-custom&gt;
+                      body {
+                        width: auto;
+                        margin: 0;
+                        padding: 0;
+                      }
+
+                      header {
+                        background: Tomato;
+                        color: white;
+                        font-size: 2em;
+                        text-align: center;
+                      }
+
+                      h1 {
+                        margin: 0;
+                        padding: 0.5em;
+                        background: white;
+                        box-shadow: 0px 3px 5px grey;
+                      }
+
+                      p {
+                        padding: 0.5em;
+                        margin: 0.5em;
+                      }
+                    &lt;/style&gt;
+                    &lt;script async src=&#34;https://cdn.ampproject.org/v0.js&#34;&gt;&lt;/script&gt;
+                    &lt;script type=&#34;application/ld+json&#34;&gt;
+                    {
+                     &#34;@context&#34;: &#34;http://schema.org&#34;,
+                     &#34;@type&#34;: &#34;NewsArticle&#34;,
+                     &#34;mainEntityOfPage&#34;:{
+                       &#34;@type&#34;:&#34;WebPage&#34;,
+                       &#34;@id&#34;:&#34;https://example.com/my-article.html&#34;
+                     },
+                     &#34;headline&#34;: &#34;My First AMP Article&#34;,
+                     &#34;image&#34;: {
+                       &#34;@type&#34;: &#34;ImageObject&#34;,
+                       &#34;url&#34;: &#34;https://example.com/article_thumbnail1.jpg&#34;,
+                       &#34;height&#34;: 800,
+                       &#34;width&#34;: 800
+                     },
+                     &#34;datePublished&#34;: &#34;2015-02-05T08:00:00+08:00&#34;,
+                     &#34;dateModified&#34;: &#34;2015-02-05T09:20:00+08:00&#34;,
+                     &#34;author&#34;: {
+                       &#34;@type&#34;: &#34;Person&#34;,
+                       &#34;name&#34;: &#34;John Doe&#34;
+                     },
+                     &#34;publisher&#34;: {
+                       &#34;@type&#34;: &#34;Organization&#34;,
+                       &#34;name&#34;: &#34;⚡ AMP Times&#34;,
+                       &#34;logo&#34;: {
+                         &#34;@type&#34;: &#34;ImageObject&#34;,
+                         &#34;url&#34;: &#34;https://example.com/amptimes_logo.jpg&#34;,
+                         &#34;width&#34;: 600,
+                         &#34;height&#34;: 60
+                       }
+                     },
+                     &#34;description&#34;: &#34;My first experience in an AMPlified world&#34;
+                    }
+                    &lt;/script&gt;
+                  &lt;/head&gt;
+                  &lt;body&gt;
+                    &lt;header&gt;
+                      News Site
+                    &lt;/header&gt;
+                    &lt;article&gt;
+                      &lt;h1&gt;Article Name&lt;/h1&gt;
+
+                      &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam egestas tortor sapien, non tristique ligula accumsan eu.&lt;/p&gt;
+
+                      &lt;amp-img src=&#34;mountains.jpg&#34; layout=&#34;responsive&#34; width=&#34;266&#34; height=&#34;150&#34;&gt;&lt;/amp-img&gt;
+                    &lt;/article&gt;
+                  &lt;/body&gt;
+                &lt;/html&gt;</code></pre>
+                <p><strong>Refresh</strong> the page and look at the console output. You should be greeted with the following message:</p>
+                <pre>AMP validation successful.</pre>
+                <h3 class="faq"><strong>F</strong><strong>requently Asked Questions</strong></h3>
+                <ul class="faq">
+                <li><a href="http://stackoverflow.com/a/27637245" target="_blank">What is DOM reflow?</a></li>
+                <li><a href="https://www.ampproject.org/docs/guides/responsive/control_layout.html#what-if-the-layout-attribute-isnt-defined" target="_blank">What if the layout attribute isn&#39;t defined?</a></li>
+                <li><a href="https://www.ampproject.org/docs/guides/responsive/control_layout.html#what-if-width-and-height-are-undefined" target="_blank">What if width and height are undefined?</a></li>
+                </ul>
+
+
+                      </google-codelab-step>
+
+                      <google-codelab-step label="Canonical URLs, Meta Data &amp; Search" duration="10">
+                        <p>Part of the new AMP initiative is the highlighting of valid AMP documents in the Google search results interface as part of a new carousel interface. This interface provides a better user experience to people searching for articles on the web. For this experience to be the best it can be, the pages included must meet certain criteria beyond passing the AMP validator.</p>
+                <p>This step provides an overview of the full requirements.</p>
+                <h2>Linking Canonical Pages and AMP Documents</h2>
+                <p>AMP aims to make the mobile web faster and is specifically focused on mostly static content at the moment. This makes AMP an excellent fit for news publishers, blogs and pages which appear as articles on websites.</p>
+                <p>However, It&#39;s important to understand the full scope of how AMP should sit inside a website&#39;s structure. At this point in time AMP documents are best generated as an accompaniment to the regular HTML articles that a publisher would host on their website. Furthermore, since AMP is focused on static content at this time, it is <strong>recommended to focus only</strong> on generating AMP documents for the <strong>article pages</strong> of your website. It is <strong>not necessary </strong>to generate AMP documents for the home page, category pages, or FAQ pages of a website.</p>
+                <p><img style="max-width: 624.00px" src="img/bd0be0a8bbc23948.png"></p>
+                <p>Canonical linking in regular HTML pages is a common technique for declaring which page should be considered the preferred page when multiple pages include the same content. Since AMP documents can be generated to be available alongside the traditional article pages of a website we should treat the traditional HTML pages as the &#34;canonical&#34; pages.</p>
+                <p>We already took the first step to achieve this in our AMP document by including a link tag in the &lt;head&gt; back to the canonical page:</p>
+                <pre><code>&lt;link rel=&#34;canonical&#34; href=&#34;/article.html&#34;&gt;</code></pre>
+                <p>The next step is to link the canonical article to the AMP page. This is achieved by including a <code>&lt;link rel=&#34;amphtml&#34;&gt;</code> tag to the &lt;head&gt; section of the canonical article.</p>
+                <p>Add the following code into the <code>&lt;head&gt;</code> section of the <code>article.html</code> file:</p>
+                <pre><code>&lt;link rel=&#34;amphtml&#34; href=&#34;/article.amp.html&#34;&gt;</code></pre>
+                <p>The following diagram illustrates the directions of link tags:</p>
+                <p><img style="max-width: 624.00px" src="img/d51fc7630b8b0f58.png"></p>
+                <p>It&#39;s necessary to setup this bidirectional linking in order for the Google search crawler to understand the relationship between our regular HTML canonical document and our AMP document. If no links were provided then it wouldn&#39;t necessarily be clear to the crawler as to which articles are the &#34;AMP versions&#34; of the regular HTML documents. By explicitly providing these links we ensure there is no ambiguity!</p>
+                <h2>Schema.org Search Engine Meta Data</h2>
+                <p>Another requirement for AMP documents to appear in the new carousel interface is adherence to the Search Engine Meta Data specification of Schema.org. This meta data is included in the <code>&lt;head&gt;</code> tag of your documents via an <code>application/ld+json</code> type script tag.</p>
+                <p>Add the following code to the bottom of the &lt;head&gt; section of your AMP document:</p>
+                <pre><code>&lt;script type=&#34;application/ld+json&#34;&gt;
+                {
+                 &#34;@context&#34;: &#34;http://schema.org&#34;,
+                 &#34;@type&#34;: &#34;NewsArticle&#34;,
+                 &#34;mainEntityOfPage&#34;:{
+                   &#34;@type&#34;:&#34;WebPage&#34;,
+                   &#34;@id&#34;:&#34;https://example.com/my-article.html&#34;
+                 },
+                 &#34;headline&#34;: &#34;My First AMP Article&#34;,
+                 &#34;image&#34;: {
+                   &#34;@type&#34;: &#34;ImageObject&#34;,
+                   &#34;url&#34;: &#34;https://example.com/article_thumbnail1.jpg&#34;,
+                   &#34;height&#34;: 800,
+                   &#34;width&#34;: 800
+                 },
+                 &#34;datePublished&#34;: &#34;2015-02-05T08:00:00+08:00&#34;,
+                 &#34;dateModified&#34;: &#34;2015-02-05T09:20:00+08:00&#34;,
+                 &#34;author&#34;: {
+                   &#34;@type&#34;: &#34;Person&#34;,
+                   &#34;name&#34;: &#34;John Doe&#34;
+                 },
+                 &#34;publisher&#34;: {
+                   &#34;@type&#34;: &#34;Organization&#34;,
+                   &#34;name&#34;: &#34;⚡ AMP Times&#34;,
+                   &#34;logo&#34;: {
+                     &#34;@type&#34;: &#34;ImageObject&#34;,
+                     &#34;url&#34;: &#34;https://example.com/amptimes_logo.jpg&#34;,
+                     &#34;width&#34;: 600,
+                     &#34;height&#34;: 60
+                   }
+                 },
+                 &#34;description&#34;: &#34;My first experience in an AMPlified world&#34;
+                }
+                &lt;/script&gt;</code></pre>
+                <p><strong>Reload</strong> the page in the browser and double check that no AMP Validation errors were introduced. </p>
+                <p>Now, <strong>open</strong> the <a href="https://developers.google.com/structured-data/testing-tool/" target="_blank">Structured Data Validation Tool</a> in a new browser window and click &#34;Test my markup&#34;. Then select the &#34;Code Snippet&#34; tab, <strong>copy</strong> the full source code from your AMP page and paste it into text editor panel of the validation tool, and <strong>click</strong> on &#34;Run Test&#34;:</p>
+                <p><img style="max-width: 460.50px" src="img/f4e1965e83928e88.png"></p>
+                <p>You should see something like this on the page:</p>
+                <p><img style="max-width: 463.50px" src="img/7175c32faef21777.png"></p>
+                <aside class="warning"><p><strong>Important: </strong>Make sure that the green &#34;All good&#34; text shows. Only AMP pages that pass this validation will show in the AMP carousel.</p>
+                </aside>
+                <aside class="special"><p><strong>Note</strong>: The content should always be the same. For News Articles use the type &#34;NewsArticle&#34;. The headline should match your article&#39;s title. Image refers to the logo of your website.</p>
+                </aside>
+                <p>The key requirements for appearing in the new Google Search carousel for AMP powered news articles are the following:</p>
+                <ol type="1" start="1">
+                <li>Make sure your AMP document validates.</li>
+                <li>Reference your AMP document from your traditional HTML page via the &lt;link&gt; tag and vice versa.</li>
+                <li>Include the Search Engine Meta Data tag above.</li>
+                </ol>
+                <p>Read more information on <a href="https://www.ampproject.org/docs/guides/discovery.html" target="_blank">page discovery</a>.</p>
+
+
+                      </google-codelab-step>
+
+                      <google-codelab-step label="Congratulations!" duration="2">
+                        <p>You&#39;ve finished the code lab and successfully explored many of the fundamental concepts of AMP documents.</p>
+                <p>Hopefully you have not only understood how these concepts and features can be implemented in an AMP document but also understand why AMP has been designed the way it has.</p>
+                <p>The following are some additional topics and links you might want to explore to <strong><em>amplify </em></strong>your skills even further!</p>
+                <ul>
+                <li><a href="https://www.ampproject.org/docs/guides/discovery.html" target="_blank">All about Page Discovery</a></li>
+                <li><a href="https://www.ampproject.org/docs/reference/spec.html" target="_blank">Disallowed HTML Tags</a></li>
+                <li><a href="https://www.ampproject.org/docs/guides/responsive/style_pages.html#disallowed-styles" target="_blank">Restricted CSS Rules &amp; Animations</a></li>
+                <li><a href="https://www.ampproject.org/docs/guides/amp_replacements.html" target="_blank">More on iFrames</a></li>
+                <li><a href="https://www.ampproject.org/docs/get_started/about-amp.html#amp-cdn" target="_blank">The AMP CDN</a></li>
+                <li><a href="https://www.ampproject.org/docs/reference/extended.html" target="_blank">List of available AMP Components</a></li>
+                </ul>
+
+
+                      </google-codelab-step>
+
+                  </google-codelab>
+
 </body>
 </html>
